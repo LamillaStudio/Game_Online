@@ -79,11 +79,13 @@ public class PlayerMovement : MonoBehaviourPun
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
-        // Animación: usa la magnitud total del input (detecta A/D también)
+        // --- ANIMACIÓN: cada eje se manda a -1/0/1, sin diluir en diagonales ---
         float speedMultiplier = isSprinting ? 2f : 1f;
-        float inputMagnitude = moveInput.magnitude; // detecta cualquier dirección, incluida lateral
-        float direction = moveInput.y < -0.1f ? -1f : 1f; // solo negativo si hay componente "atrás"
 
-        animator.SetFloat("VelocityZ", inputMagnitude * direction * speedMultiplier);
+        float animX = Mathf.Abs(moveInput.x) > 0.1f ? Mathf.Sign(moveInput.x) : 0f;
+        float animZ = Mathf.Abs(moveInput.y) > 0.1f ? Mathf.Sign(moveInput.y) : 0f;
+
+        animator.SetFloat("VelocityX", animX * speedMultiplier);
+        animator.SetFloat("VelocityZ", animZ * speedMultiplier);
     }
 }
