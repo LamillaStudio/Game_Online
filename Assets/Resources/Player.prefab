@@ -247,6 +247,7 @@ MonoBehaviour:
   walkSpeed: 2
   sprintSpeed: 5
   gravity: -9.81
+  jumpForce: 5
 --- !u!114 &-8198127463395076857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383,6 +384,9 @@ PrefabInstance:
       addedObject: {fileID: 8278644874941507807}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dd063a068ef092c4786ab8f4cf08ba4d, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 7188066514804652111}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dd063a068ef092c4786ab8f4cf08ba4d, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 1683875989874380216}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dd063a068ef092c4786ab8f4cf08ba4d, type: 3}
       insertIndex: -1
@@ -454,9 +458,27 @@ MonoBehaviour:
   - Type: 1
     SynchronizeType: 2
     Name: VelocityZ
+  - Type: 4
+    SynchronizeType: 1
+    Name: Grounded
+  - Type: 9
+    SynchronizeType: 1
+    Name: Jump
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
+--- !u!114 &7188066514804652111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8910867322917491057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68e8243c69d7f5645b2078d055f263f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimationEventRelay
 --- !u!114 &1683875989874380216
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -16,6 +16,10 @@ public class PlayerMovement : MonoBehaviourPun
     public float sprintSpeed = 9f;
     public float gravity = -9.81f;
 
+    public float jumpForce = 5f;
+
+    private bool movementLocked;
+
     void Awake()
     {
         controller = GetComponent<CharacterController>();
@@ -34,6 +38,8 @@ public class PlayerMovement : MonoBehaviourPun
 
         controls.Player.Sprint.performed += OnSprintPerformed;
         controls.Player.Sprint.canceled += OnSprintCanceled;
+
+        controls.Player.Jump.performed += OnJump;
     }
 
     void OnDisable()
@@ -43,6 +49,8 @@ public class PlayerMovement : MonoBehaviourPun
 
         controls.Player.Sprint.performed -= OnSprintPerformed;
         controls.Player.Sprint.canceled -= OnSprintCanceled;
+
+        controls.Player.Jump.performed -= OnJump;
 
         controls.Player.Disable();
     }
@@ -62,14 +70,38 @@ public class PlayerMovement : MonoBehaviourPun
         isSprinting = false;
     }
 
+    void OnJump(InputAction.CallbackContext ctx)
+    {
+        if (controller.isGrounded)
+        {
+            animator.SetTrigger("Jump");
+        }
+    }
+
+    public void ApplyJumpForce()
+    {
+        if (!photonView.IsMine) return;
+        velocity.y = jumpForce;
+    }
+
+    public void SetMovementLocked(bool locked)
+    {
+        movementLocked = locked;
+    }
+
     void Update()
     {
         if (!photonView.IsMine) return;
 
         float currentSpeed = isSprinting ? sprintSpeed : walkSpeed;
 
-        // Movimiento relativo a hacia donde mira el jugador
-        Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
+        // Si está bloqueado (aterrizando), no aplicamos input de movimiento
+        Vector3 move = Vector3.zero;
+        if (!movementLocked)
+        {
+            move = transform.right * moveInput.x + transform.forward * moveInput.y;
+        }
+
         controller.Move(move * currentSpeed * Time.deltaTime);
 
         // Gravedad
@@ -87,5 +119,6 @@ public class PlayerMovement : MonoBehaviourPun
 
         animator.SetFloat("VelocityX", animX * speedMultiplier);
         animator.SetFloat("VelocityZ", animZ * speedMultiplier);
+        animator.SetBool("Grounded", controller.isGrounded);
     }
 }
