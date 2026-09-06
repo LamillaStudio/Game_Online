@@ -8,19 +8,13 @@ public class MenuManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private TMP_InputField playerNameInput;
     [SerializeField] private TMP_InputField roomNameInput;
+    [SerializeField] private TMP_Dropdown maxPlayersDropdown;
     [SerializeField] private TextMeshProUGUI statusText;
 
     private const string GameSceneName = "OnlineTest";
-    private bool isCreatingRoom;
-
-    void Awake()
-    {
-        PhotonNetwork.AutomaticallySyncScene = true;
-    }
 
     void Start()
     {
-        // Recuerda el último nombre usado
         if (PlayerPrefs.HasKey("PlayerName"))
             playerNameInput.text = PlayerPrefs.GetString("PlayerName");
 
@@ -45,11 +39,19 @@ public class MenuManager : MonoBehaviourPunCallbacks
         if (!ValidateInputs()) return;
 
         SavePlayerName();
-        isCreatingRoom = true;
         SetStatus("Creando sala...");
 
-        RoomOptions options = new RoomOptions { MaxPlayers = 8 };
+        byte maxPlayers = GetSelectedMaxPlayers();
+
+        RoomOptions options = new RoomOptions { MaxPlayers = maxPlayers };
         PhotonNetwork.CreateRoom(roomNameInput.text, options);
+    }
+
+    private byte GetSelectedMaxPlayers()
+    {
+        // Asume que las opciones del Dropdown son exactamente: "2", "4", "6", "8"
+        string selected = maxPlayersDropdown.options[maxPlayersDropdown.value].text;
+        return byte.Parse(selected);
     }
 
     public void OnJoinRoomPressed()
@@ -57,19 +59,9 @@ public class MenuManager : MonoBehaviourPunCallbacks
         if (!ValidateInputs()) return;
 
         SavePlayerName();
-        isCreatingRoom = false;
         SetStatus("Uniéndose a sala...");
 
         PhotonNetwork.JoinRoom(roomNameInput.text);
-    }
-
-    public void OnQuitButtonPressed()
-    {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-    Application.Quit();
-#endif
     }
 
     public override void OnJoinedRoom()
@@ -85,7 +77,7 @@ public class MenuManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
-        SetStatus("No se pudo unir: la sala no existe.");
+        SetStatus("No se pudo unir: la sala no existe o está llena.");
     }
 
     private bool ValidateInputs()
@@ -118,5 +110,14 @@ public class MenuManager : MonoBehaviourPunCallbacks
     {
         if (statusText != null) statusText.text = message;
         Debug.Log(message);
+    }
+
+    public void OnQuitButtonPressed()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }

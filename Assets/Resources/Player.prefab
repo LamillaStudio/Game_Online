@@ -184,6 +184,7 @@ GameObject:
   - component: {fileID: 1882355451241540554}
   - component: {fileID: 2299836017959529156}
   - component: {fileID: 4642002978936800095}
+  - component: {fileID: 3100053197203656925}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -320,6 +321,19 @@ CharacterController:
   m_SkinWidth: 0.02
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0.93, z: 0}
+--- !u!114 &3100053197203656925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8926197693876307030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52eda45b030fb3540af99e1f3ccbcc7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerColor
+  bodyRenderer: {fileID: 2857106229909714947}
 --- !u!1001 &8604315446754094112
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -368,10 +382,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -4706228988682842286, guid: dd063a068ef092c4786ab8f4cf08ba4d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: dd063a068ef092c4786ab8f4cf08ba4d, type: 3}
       propertyPath: m_Name
       value: T-Pose
       objectReference: {fileID: 0}
+    - target: {fileID: 5822821947120931875, guid: dd063a068ef092c4786ab8f4cf08ba4d, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a8fd32a598d3c8d4699c94604bbdfff0, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
