@@ -79,9 +79,11 @@ public class PlayerMovement : MonoBehaviourPun
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
-        // Animación: valor real según input y si está corriendo o caminando
-        float inputMagnitude = moveInput.magnitude; // 0 a 1
-        float animSpeed = inputMagnitude * currentSpeed;
-        animator.SetFloat("Speed", animSpeed);
+        // Animación: usa la magnitud total del input (detecta A/D también)
+        float speedMultiplier = isSprinting ? 2f : 1f;
+        float inputMagnitude = moveInput.magnitude; // detecta cualquier dirección, incluida lateral
+        float direction = moveInput.y < -0.1f ? -1f : 1f; // solo negativo si hay componente "atrás"
+
+        animator.SetFloat("VelocityZ", inputMagnitude * direction * speedMultiplier);
     }
 }
