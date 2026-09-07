@@ -17,6 +17,7 @@ public class PlayerColor : MonoBehaviourPun
     [PunRPC]
     void SetPlayerColor(float r, float g, float b)
     {
+        Debug.Log($"Aplicando color: R={r} G={g} B={b} al objeto {gameObject.name}");
         Material instanceMaterial = bodyRenderer.material;
         instanceMaterial.SetColor("_BaseColor", new Color(r, g, b));
     }

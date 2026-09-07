@@ -1,14 +1,25 @@
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using TMPro;
 
 public class MenuManager : MonoBehaviourPunCallbacks
 {
+    [Header("Paneles")]
+    [SerializeField] private GameObject mainPanel;
+    [SerializeField] private GameObject createPanel;
+    [SerializeField] private GameObject joinPanel;
+
+    [Header("Main Panel")]
     [SerializeField] private TMP_InputField playerNameInput;
-    [SerializeField] private TMP_InputField roomNameInput;
+
+    [Header("Create Panel")]
     [SerializeField] private TMP_Dropdown maxPlayersDropdown;
+
+    [Header("Join Panel")]
+    [SerializeField] private TMP_InputField roomCodeInput;
+
+    [Header("Status")]
     [SerializeField] private TextMeshProUGUI statusText;
 
     private const string GameSceneName = "OnlineTest";
@@ -17,6 +28,8 @@ public class MenuManager : MonoBehaviourPunCallbacks
     {
         if (PlayerPrefs.HasKey("PlayerName"))
             playerNameInput.text = PlayerPrefs.GetString("PlayerName");
+
+        ShowMainPanel();
 
         if (PhotonNetwork.IsConnected)
         {
@@ -34,34 +47,76 @@ public class MenuManager : MonoBehaviourPunCallbacks
         SetStatus("Conectado. Listo para jugar.");
     }
 
-    public void OnCreateRoomPressed()
+    // --- Navegación entre paneles ---
+
+    public void ShowMainPanel()
     {
-        if (!ValidateInputs()) return;
+        mainPanel.SetActive(true);
+        createPanel.SetActive(false);
+        joinPanel.SetActive(false);
+    }
+
+    public void ShowCreatePanel()
+    {
+        if (!ValidatePlayerName()) return;
+
+        mainPanel.SetActive(false);
+        createPanel.SetActive(true);
+    }
+
+    public void ShowJoinPanel()
+    {
+        if (!ValidatePlayerName()) return;
+
+        mainPanel.SetActive(false);
+        joinPanel.SetActive(true);
+    }
+
+    // --- Crear sala ---
+
+    public void OnConfirmCreatePressed()
+    {
+        if (!PhotonNetwork.IsConnectedAndReady)
+        {
+            SetStatus("Aún conectando, espera un momento...");
+            return;
+        }
 
         SavePlayerName();
         SetStatus("Creando sala...");
 
+        string roomCode = RoomCodeGenerator.Generate();
         byte maxPlayers = GetSelectedMaxPlayers();
 
         RoomOptions options = new RoomOptions { MaxPlayers = maxPlayers };
-        PhotonNetwork.CreateRoom(roomNameInput.text, options);
+        PhotonNetwork.CreateRoom(roomCode, options);
     }
 
     private byte GetSelectedMaxPlayers()
     {
-        // Asume que las opciones del Dropdown son exactamente: "2", "4", "6", "8"
         string selected = maxPlayersDropdown.options[maxPlayersDropdown.value].text;
         return byte.Parse(selected);
     }
 
-    public void OnJoinRoomPressed()
+    // --- Unirse a sala ---
+
+    public void OnConfirmJoinPressed()
     {
-        if (!ValidateInputs()) return;
+        if (string.IsNullOrWhiteSpace(roomCodeInput.text))
+        {
+            SetStatus("Ingresa el código de sala.");
+            return;
+        }
+        if (!PhotonNetwork.IsConnectedAndReady)
+        {
+            SetStatus("Aún conectando, espera un momento...");
+            return;
+        }
 
         SavePlayerName();
         SetStatus("Uniéndose a sala...");
 
-        PhotonNetwork.JoinRoom(roomNameInput.text);
+        PhotonNetwork.JoinRoom(roomCodeInput.text.ToUpper());
     }
 
     public override void OnJoinedRoom()
@@ -72,29 +127,21 @@ public class MenuManager : MonoBehaviourPunCallbacks
 
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
-        SetStatus("No se pudo crear la sala: ya existe o hubo un error.");
+        SetStatus("No se pudo crear la sala, intenta de nuevo.");
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
-        SetStatus("No se pudo unir: la sala no existe o está llena.");
+        SetStatus("Código inválido o sala llena.");
     }
 
-    private bool ValidateInputs()
+    // --- Utilidades ---
+
+    private bool ValidatePlayerName()
     {
         if (string.IsNullOrWhiteSpace(playerNameInput.text))
         {
             SetStatus("Ingresa un nombre de jugador.");
-            return false;
-        }
-        if (string.IsNullOrWhiteSpace(roomNameInput.text))
-        {
-            SetStatus("Ingresa un nombre de sala.");
-            return false;
-        }
-        if (!PhotonNetwork.IsConnectedAndReady)
-        {
-            SetStatus("Aún conectando, espera un momento...");
             return false;
         }
         return true;
