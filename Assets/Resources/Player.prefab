@@ -185,6 +185,8 @@ GameObject:
   - component: {fileID: 2299836017959529156}
   - component: {fileID: 4642002978936800095}
   - component: {fileID: 3100053197203656925}
+  - component: {fileID: 9123129751099065692}
+  - component: {fileID: 7022571687396333182}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -334,6 +336,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerColor
   bodyRenderer: {fileID: 2857106229909714947}
+--- !u!114 &9123129751099065692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8926197693876307030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bf42417f376b224394da80b65c1663f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMoney
+  startingMoney: 500
+--- !u!114 &7022571687396333182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8926197693876307030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6b191fcb6891cb4fab2d085cfd19f9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteraction
+  interactRadius: 2
+  gamblingUI: {fileID: 0}
 --- !u!1001 &8604315446754094112
 PrefabInstance:
   m_ObjectHideFlags: 0
